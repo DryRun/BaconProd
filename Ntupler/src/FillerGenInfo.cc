@@ -18,6 +18,7 @@ FillerGenInfo::FillerGenInfo(const edm::ParameterSet &iConfig,edm::ConsumesColle
   fGenParName    (iConfig.getUntrackedParameter<std::string>("edmGenParticlesName","genParticles")),
   fFillAll       (iConfig.getUntrackedParameter<bool>("fillAllGen",false)),
   fFillLHEWeights(iConfig.getUntrackedParameter<bool>("fillLHEWeights",false))
+  fFillGenWeights(iConfig.getUntrackedParameter<bool>("fillGenWeights",false))
 {
   fTokGenEvent     = iC.mayConsume<GenEventInfoProduct>        ( fGenEvtInfoName);
   fTokGenPar       = iC.mayConsume<reco::GenParticleCollection>( fGenParName    );
@@ -46,7 +47,6 @@ void FillerGenInfo::fill(TGenEventInfo *genEvtInfo, TClonesArray *particlesArr, 
   genEvtInfo->x_2      = (hGenEvtInfoProduct->hasPDF()) ? pdfInfo->x.second  : 0;
   genEvtInfo->scalePDF = hGenEvtInfoProduct->qScale();
   genEvtInfo->xs       = iXS;
-  genEvtInfo->weight   = hGenEvtInfoProduct->weight();
 
   // Get LHE event information
   if(fFillLHEWeights) {
@@ -67,6 +67,14 @@ void FillerGenInfo::fill(TGenEventInfo *genEvtInfo, TClonesArray *particlesArr, 
       int id = -1;
       try {id = atoi(pId.c_str());} catch(int e) { std::cout << " ===> Error converting LHE to int" << std::endl;}
       pWeight->id     = id;
+    }
+  }
+
+  // Weights from GenEventInfoProduct
+  if(fFillGenWeights) {
+    genEvtInfo->weights.clear();
+    for (auto& it_weight : hGenEvtInfoProduct->weights()) {
+      genEvtInfo->weights.push_back(it_weight);
     }
   }
 

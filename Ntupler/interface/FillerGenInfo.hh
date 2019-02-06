@@ -42,6 +42,7 @@ namespace baconhep
       edm::EDGetTokenT<reco::GenParticleCollection> fTokGenPar;
       edm::EDGetTokenT<LHEEventProduct>             fTokLHEEventInfo;
       bool fFillLHEWeights;
+      bool fFillGenWeights;
   };
 }
 #endif

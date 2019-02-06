@@ -204,6 +204,9 @@ NtuplerMod::NtuplerMod(const edm::ParameterSet &iConfig):
       if(fFillLHEWgt) {
         fLHEWgtArr = new TClonesArray("baconhep::TLHEWeight",5000); assert(fLHEWgtArr);
       }
+      if (fFillGenWgt) {
+        fGenEvtInfo->weights.reserve(50);
+      }
       fFillerGenInfo = new baconhep::FillerGenInfo(cfg,consumesCollector()); assert(fFillerGenInfo);
     }
   }
